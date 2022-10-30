@@ -1,7 +1,5 @@
 <template>
 
-  <div id="App">
-
     <div class="container">
 
       <div class="row">
@@ -56,17 +54,20 @@
                   <th>Nombre</th>
                   <th>Ingredientes</th>
                   <th>Calorias</th>
-
+                  <th>Actualizar</th>
+                  <th>Eliminar</th>
                 </tr>
               </thead>
 
               <tbody>
-                <tr v-for="item of items" v-bind:key="item.id">
-                  <td>{{ item.id }}</td>
-                  <td><input type="text" v-model="item.nombre" /> </td>
-                  <td><input type="text" v-model="item.ingredientes" style="width:500px" /></td>
-                  <td><input type="text" v-model="item.calorias" /></td>
-                 
+                <tr v-for="todo of todos" v-bind:key="todo.id">
+                  <td>{{ todo.id }}</td>
+                  <td><input type="text" v-model="todo.nombre" /> </td>
+                  <td><input type="text" v-model="todo.ingredientes" style="width:500px" /></td>
+                  <td><input type="text" v-model="todo.calorias" /></td>
+                  <td><button class="btn btn-success text-white" v-on:click="PutApi(todo.id, todo.nombre, todo.ingredientes, todo.calorias)">Update</button>
+                  </td>
+                  <td><button class="btn btn-danger text-white" v-on:click="DeleteApi(todo.id)">Delete</button></td>
                 </tr>
               </tbody>
 
@@ -78,9 +79,10 @@
 
     </div>
 
-  </div>
+ 
 
 </template>
+
 
 
 <script>
@@ -96,7 +98,7 @@ export default {
 
     return {
 
-      items: [],
+      todos: [],
       idX: '',
       nombreX: '',
       ingredientesX: [" "],
@@ -115,7 +117,7 @@ export default {
 
         .then((resp) => {
 
-          this.items = resp.data;
+          this.todos = resp.data;
 
         })
 
@@ -127,36 +129,83 @@ export default {
 
     },
 
-async PostApi() {
+    async PostApi() {
 
-  await axios
+      await axios
 
-    .post(baseUrl, {
-      nombre: this.nombreX,
-      ingredientes: [this.ingredientesX],
-      calorias: this.caloriasX
-    })
+        .post(baseUrl, {
+          nombre: this.nombreX,
+          ingredientes: [this.ingredientesX],
+          calorias: this.caloriasX
+        })
 
-    .then((resp) => {
+        .then((resp) => {
 
-      console.log(resp);
+          console.log(resp);
 
-      this.nombreX = '';
-      this.ingredientesX = '';
-      this.caloriasX = '';
+          this.nombreX = '';
+          this.ingredientesX = '';
+          this.caloriasX = '';
 
-      this.GetApi();
+          this.GetApi();
 
-    })
+        })
 
-    .catch((err) => {
+        .catch((err) => {
 
-      console.log(err);
+          console.log(err);
 
-    });
+        });
 
-},
+    },
 
+    async DeleteApi(id) {
+
+      await axios
+
+        .delete(baseUrl + id)
+
+        .then((resp) => {
+
+          console.log(resp);
+
+          this.GetApi();
+
+        })
+
+        .catch((err) => {
+
+          console.log(err);
+
+        });
+
+    },
+
+    async PutApi(id, nombre, ingredientes, calorias) {
+
+
+      await axios
+
+        .put(baseUrl + id, {
+          nombre: nombre,
+          ingredientes: ingredientes,
+          calorias: calorias,
+        })
+
+        .then((resp) => {
+
+          console.log(resp);
+          this.GetApi();
+
+        })
+
+        .catch((err) => {
+
+          console.log(err);
+
+        });
+
+    }
 
   },
 
@@ -167,7 +216,11 @@ async PostApi() {
   }
 
 };
+
 </script>
 
+
+
 <style>
+
 </style>
