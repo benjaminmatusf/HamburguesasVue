@@ -6,7 +6,45 @@
 
       <div class="row">
 
-        
+        <div class="col-md-3">
+
+          <div class="card">
+            <div class="card-body">
+
+              <form>
+                <div class="text-center mb-3">
+                  <h4>CREAR NUEVA HAMBURGUESA</h4>
+                </div>
+
+                
+                <div class="form-outline mb-4">
+                  <input type="text" class="form-control" id="inputNombre" v-model="nombreX">
+                  <label class="form-label" for="inputNombre">Nombre</label>
+                </div>
+
+                
+                <div class="form-outline mb-4">
+                  <input type="text" class="form-control" id="inputIngredientes" v-model="ingredientesX">
+                  <label class="form-label" for="inputIngredientes">Ingredientes</label>
+                </div>
+
+               
+                <div class="form-outline mb-4">
+                  <input type="number" class="form-control" id="inputCalorias" v-model="caloriasX">
+                  <label class="form-label" for="inputCalorias">Calorias</label>
+                </div>
+
+
+                
+                <button type="submit" class="btn btn-success btn-block mb-4" v-on:click="PostApi()">Crear</button>
+              </form>
+
+            </div>
+          </div>
+
+
+
+        </div>
 
         <div class="col-md-9">
           <div class="table-responsive">
@@ -88,6 +126,36 @@ export default {
         });
 
     },
+
+async PostApi() {
+
+  await axios
+
+    .post(baseUrl, {
+      nombre: this.nombreX,
+      ingredientes: [this.ingredientesX],
+      calorias: this.caloriasX
+    })
+
+    .then((resp) => {
+
+      console.log(resp);
+
+      this.nombreX = '';
+      this.ingredientesX = '';
+      this.caloriasX = '';
+
+      this.GetApi();
+
+    })
+
+    .catch((err) => {
+
+      console.log(err);
+
+    });
+
+},
 
 
   },
